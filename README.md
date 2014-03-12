@@ -5,9 +5,7 @@ Medals of Honer
 ==================
 
 [![Build Status](https://travis-ci.org/samtes/air.light-js.png?branch=master)](https://travis-ci.org/samtes/air.light-js)
-[![Build Status](https://travis-ci.org/samtes/air.light-js.png?branch=master)](https://travis-ci.org/samtes/air.light-js)
-
-
+[![Dependency Status](https://gemnasium.com/samtes/air.light-js.png)](https://gemnasium.com/samtes/air.light-js)
 
 
 
