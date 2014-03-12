@@ -46,3 +46,20 @@ function hashPassword(password, fn){
 }
 
 
+User.findByEmailAndPassword = function(email, password, fn){
+  users.findOne({email:email}, function(err, record){
+    if(record){
+      bcrypt.compare(password, record.password, function(err, result){
+        if(result){
+          fn(record);
+        }else{
+          fn(null);
+        }
+      });
+    }else{
+      fn(null);
+    }
+  });
+};
+
+

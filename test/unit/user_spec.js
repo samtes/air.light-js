@@ -63,4 +63,52 @@ describe('User', function(){
       });
     });
   });
+
+  describe('.findByEmailAndPassword', function(){
+    it('should find a user by email and password', function(done){
+      var u2 = new User({email:'nsstes@noemail.com', password:'1234', role:'host'});
+      var u3 = new User({email:'test@noemail.com', password:'1234', role:'host'});
+      u2.register(function(){
+        u3.register(function(){
+          var email = u2.email;
+          var password = '1234';
+          User.findByEmailAndPassword(email, password, function(user){
+            expect(user.email).to.equal('nsstes@noemail.com');
+            expect(user.password).to.not.equal('1234');
+            done();
+          });
+        });
+      });
+    });
+
+    it('should inot find a user by email and password bc wrong email', function(done){
+      var u2 = new User({email:'nsstes@noemail.com', password:'1234', role:'host'});
+      var u3 = new User({email:'test@noemail.com', password:'1234', role:'host'});
+      u2.register(function(){
+        u3.register(function(){
+          var email = 'test1@noemail.com';
+          var password = '1234';
+          User.findByEmailAndPassword(email, password, function(user){
+            expect(user).to.be.null;
+            done();
+          });
+        });
+      });
+    });
+
+    it('should not find a user by email and password bc wrong email', function(done){
+      var u2 = new User({email:'nsstes@noemail.com', password:'1234', role:'host'});
+      var u3 = new User({email:'test@noemail.com', password:'1234', role:'host'});
+      u2.register(function(){
+        u3.register(function(){
+          var email = 'test@noemail.com';
+          var password = '12345';
+          User.findByEmailAndPassword(email, password, function(user){
+            expect(user).to.be.null;
+            done();
+          });
+        });
+      });
+    });
+  });
 });

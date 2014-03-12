@@ -1,16 +1,14 @@
 'use strict';
 
 process.env.DBNAME = 'airbnb-test';
-var request = require('supertest');
-//var fs = require('fs');
-//var exec = require('child_process').exec;
 var app = require('../../app/app');
+var request = require('supertest');
 var expect = require('chai').expect;
-var User, u3;
-//var cookie;
-//var u1;
+var User;
+var bob;
 
-describe('user', function(){
+describe('users', function(){
+
   before(function(done){
     request(app)
     .get('/')
@@ -22,51 +20,89 @@ describe('user', function(){
 
   beforeEach(function(done){
     global.nss.db.dropDatabase(function(err, result){
-      u3 = new User({email:'sam@nomail.com', password:'1234', role:'host'});
-      u3.register(function(){
+      bob = new User({role:'host', email:'bob@nomail.com', password:'1234'});
+      bob.register(function(){
         done();
       });
     });
   });
 
-  describe('GET/register', function(){
+  describe('GET /register', function(){
     it('should display the register page', function(done){
       request(app)
       .get('/register')
-      .end(function(er, res){
+      .end(function(err, res){
         expect(res.status).to.equal(200);
-        expect(res.text).to.include('register');
+        expect(res.text).to.include('Register');
         done();
       });
     });
   });
 
-  describe('POST/register', function(){
+  describe('POST /register', function(){
     it('should register a new user', function(done){
       request(app)
       .post('/register')
-      .field('email', 'new@new.com')
+      .field('email', 'sue@nomail.com')
       .field('password', '1234')
-      .field('role', 'host')
-      .end(function(er, res){
+      .field('role', 'guest')
+      .end(function(err, res){
         expect(res.status).to.equal(302);
-        expect(res.text).to.include('Moved Temporarily');
+        expect(res.text).to.equal('Moved Temporarily. Redirecting to /');
         done();
       });
     });
-
-    it('should inot register a new user for duplicate email', function(done){
+    it('should not register a new user', function(done){
       request(app)
       .post('/register')
-      .field('email', 'sam@nomail.com')
+      .field('email', 'bob@nomail.com')
       .field('password', '1234')
-      .field('role', 'host')
-      .end(function(er, res){
+      .field('role', 'guest')
+      .end(function(err, res){
         expect(res.status).to.equal(200);
-        expect(res.text).to.include('register');
+        expect(res.text).to.include('Register');
         done();
       });
     });
   });
+
+  describe('GET /login', function(){
+    it('should display the login page', function(done){
+      request(app)
+      .get('/login')
+      .end(function(err, res){
+        expect(res.status).to.equal(200);
+        expect(res.text).to.include('Login');
+        done();
+      });
+    });
+  });
+
+  describe('POST /login', function(){
+    it('should login a new user', function(done){
+      request(app)
+      .post('/login')
+      .field('email', 'bob@nomail.com')
+      .field('password', '1234')
+      .end(function(err, res){
+        expect(res.status).to.equal(302);
+        expect(res.text).to.equal('Moved Temporarily. Redirecting to /');
+        done();
+      });
+    });
+
+    it('should not login a new user', function(done){
+      request(app)
+      .post('/login')
+      .field('email', 'wrong@nomail.com')
+      .field('password', '1234')
+      .end(function(err, res){
+        expect(res.status).to.equal(200);
+        expect(res.text).to.include('Login');
+        done();
+      });
+    });
+  });
+
 });
 
