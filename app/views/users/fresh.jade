@@ -1,0 +1,18 @@
+extends ../shared/template
+
+block content
+  h1= title
+
+  .row
+    .small-4.columns
+      form(method='post', action='register')
+        fieldset
+          legend=title
+          label Email
+          input(type='email', name='email', autofocus=true)
+          label Password
+          input(type='password', name='password')
+          label Role
+          select(name='role')
+            option host
+            option guest
